@@ -1,0 +1,6 @@
+{
+  "paths": {
+    "/g": "https://google.com",
+    "/go-http": "https://golang.org/pkg/net/http/"
+  }
+}
