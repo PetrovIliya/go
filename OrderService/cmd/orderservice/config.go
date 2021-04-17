@@ -2,11 +2,11 @@ package main
 
 import "github.com/kelseyhightower/envconfig"
 
-const appId = "orderService"
+const appId = "orderservice"
 
 type config struct {
-	ServeRESTAddress string `envconfig:"SERVICE_REST_ADDRESS" default:"8000"`
-	DataBaseUrl string `envconfig:"DATABASE_URL"`
+	ServeRESTAddress string `envconfig:"orderservice_service_rest_address" default:":8000"`
+	DatabaseUrl string `envconfig:"database_url" default:"orderservice:1234@/orderservice"`
 }
 
 func ParseEnv() (*config, error) {

@@ -4,10 +4,12 @@ modules:
 	go mod tidy
 
 build: modules
-	go build -o bin/orderservice/ ./cmd/orderservice/.
+	go build -o bin/orderservice/. ./cmd/orderservice/.
 
 test:
 	go test ./...
 
 check:
 	golangci-lint run
+run:
+	bin/orderservice/orderservice

@@ -1,7 +1,7 @@
 package orderservice
 
 import (
-	"OrderService/pkg/repository"
+	"OrderService/pkg/model"
 	"OrderService/pkg/repositoryManager"
 	"encoding/json"
 	"github.com/gorilla/mux"
@@ -96,7 +96,7 @@ func (srv Server) createOrder(w http.ResponseWriter, r *http.Request) {
 		}
 	}(r.Body)
 
-	var order repository.Order
+	var order model.Order
 	err = json.Unmarshal(b, &order)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

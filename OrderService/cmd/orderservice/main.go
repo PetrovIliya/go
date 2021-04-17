@@ -17,10 +17,15 @@ import log "github.com/sirupsen/logrus"
 
 func main() {
 	config, err := ParseEnv()
+	if err != nil {
+		log.Fatal(err.Error())
+		return
+	}
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
+	println(config.DatabaseUrl)
 
-	db, err := sqlx.Open("mysql", config.DataBaseUrl)
+	db, err := sqlx.Open("mysql", config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
