@@ -1,13 +1,11 @@
 package main
 
 import (
-	"OrderService/pkg/orderservice"
-	"OrderService/pkg/repository"
-	"OrderService/pkg/repositoryManager"
+	"OrderService/pkg/orderservice/infrastructure"
+	"OrderService/pkg/orderservice/transport"
 	"context"
-	_ "database/sql"
+	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 	"net/http"
 	"os"
 	"os/signal"
@@ -25,19 +23,18 @@ func main() {
 	log.SetOutput(os.Stdout)
 	println(config.DatabaseUrl)
 
-	db, err := sqlx.Open("mysql", config.DatabaseUrl)
+	db, err := sql.Open("mysql", config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer func(db *sqlx.DB) {
+	defer func(db *sql.DB) {
 		if err := db.Close(); err != nil {
 			log.Fatal(err)
 		}
 	}(db)
 
-	orderRepository := repository.OrderRepository{Db: *db}
-	rm := repositoryManager.Create(orderRepository)
-	server := orderservice.Server{RepositoryManager: rm}
+	orderRepository := infrastructure.CreateRepository(db)
+	server := transport.CreateServer(orderRepository)
 
 	if err != nil {
 		log.Error(err.Error())
@@ -46,14 +43,14 @@ func main() {
 	serverUrl := config.ServeRESTAddress
 	log.WithFields(log.Fields{"url": serverUrl}).Info("starting the server")
 	killSignalChan := getKillSignalChan()
-	httpServer := startHttpServer(serverUrl, &server)
+	httpServer := startHttpServer(serverUrl, server)
 
 	waitForKillSignal(killSignalChan)
 	_ = httpServer.Shutdown(context.Background())
 }
 
-func startHttpServer(serverUrl string, server *orderservice.Server) *http.Server {
-	router := orderservice.Router(server)
+func startHttpServer(serverUrl string, server *transport.Server) *http.Server {
+	router := transport.Router(server)
 	srv := &http.Server{Addr: serverUrl, Handler: router}
 	go func() {
 		log.Fatal(srv.ListenAndServe())

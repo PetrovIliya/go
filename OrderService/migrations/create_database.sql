@@ -1,0 +1,1 @@
+CREATE SCHEMA `orderservice` DEFAULT CHARACTER SET utf8 ;
