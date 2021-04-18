@@ -16,7 +16,7 @@ func TestGetOrders(t *testing.T) {
 	req := httptest.NewRequest("GET", RequestAddress, nil)
 	w := httptest.NewRecorder()
 
-	srv := Server{orderRepository: infrastructure.CreateRepositoryMock(map[string]model.Order{})}
+	srv := Server{orderRepository: infrastructure.CreateRepositoryMock(map[int]model.Order{})}
 	srv.getOrders(w, req)
 	response := w.Result()
 	if response.StatusCode != http.StatusOK {
@@ -39,7 +39,7 @@ func TestGetOrder(t *testing.T) {
 	const RequestAddress = "http://localhost:8000/api/v1/order/11"
 	req := httptest.NewRequest("GET", RequestAddress, nil)
 	w := httptest.NewRecorder()
-	srv := Server{orderRepository: infrastructure.CreateRepositoryMock(map[string]model.Order{})}
+	srv := Server{orderRepository: infrastructure.CreateRepositoryMock(map[int]model.Order{})}
 	srv.getOrder(w, req)
 	response := w.Result()
 	if response.StatusCode != http.StatusOK {
