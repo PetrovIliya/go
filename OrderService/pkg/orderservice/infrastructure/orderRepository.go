@@ -92,7 +92,7 @@ func (repository OrderRepository) Delete(orderId int) error {
 func (repository OrderRepository) Update(order model.Order) error {
 	menuItems := order.MenuItems
 
-	_, err := repository.db.Exec("UPDATE `order` SET cost = ?, update_at = NOW() WHERE order_id = ?", order.Cost, order.Id)
+	_, err := repository.db.Exec("UPDATE `order` SET cost = ?, updated_at = NOW() WHERE order_id = ?", order.Cost, order.Id)
 	if err != nil {
 		return err
 	}

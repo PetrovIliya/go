@@ -21,7 +21,6 @@ func main() {
 	}
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
-	println(config.DatabaseUrl)
 
 	db, err := sql.Open("mysql", config.DatabaseUrl)
 	if err != nil {

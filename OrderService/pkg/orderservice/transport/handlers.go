@@ -152,5 +152,31 @@ func (srv Server) deleteOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv Server) updateOrder(w http.ResponseWriter, r *http.Request) {
-
+	requestParams := mux.Vars(r)
+	orderId, err := strconv.Atoi(requestParams["orderId"])
+	if err != nil {
+		http.Error(w, `Order id should contain only numbers [0-9]`, http.StatusInternalServerError)
+		return
+	}
+	orderRepository := srv.orderRepository
+	isOrderExist, err := orderRepository.IsExist(orderId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !isOrderExist {
+		http.Error(w, `Order is not exist`, http.StatusBadRequest)
+		return
+	}
+	b, err := ioutil.ReadAll(r.Body)
+	var order model.Order
+	err = json.Unmarshal(b, &order)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	order.Id = orderId
+	err = orderRepository.Update(order)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
